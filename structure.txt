@@ -1,0 +1,18 @@
+notes-internship/
+    controllers/
+        userController.js
+        noteController.js
+        companyController.js
+    
+    models/
+        User.js
+        Note.js
+        Company.js
+
+    routes/
+        userRoutes.js
+        noteRoutes.js
+        companyRoutes.js
+        index.js
+    
+    server.js (Main Express application)
