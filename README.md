@@ -6,7 +6,7 @@ Projekat je razvijen kao dio mog internešipa kako bih demonstrirao svoje vešti
 ## Funkcionalnosti
 
 - **Kreiranje korisnika:** Korisnici se mogu registrovati kao korisnici neke kompanije
-- **Role za korisnike:** Korisnici mogu biti admini ili useri. Admin ima uvid u sve usere svoje kompanije.
+- **Role za korisnike:** Korisnici mogu biti admini ili useri. Admin ima uvid u sve zabiljeske usera svoje kompanije.
   
 - **Dodavanje zabiljeski:** Korisnici mogu dodavati nove zabiljeske unosom naslova i sadržaja beleške.
 - **Uređivanje zabiljeski:** Postojeće zabiljeske mogu se jednostavno uređivati kako bi se ažurirao naslov ili sadržaj.
