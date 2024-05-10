@@ -101,9 +101,8 @@ const login_user = (req, res) => {
     return res.status(401).send("Lozinka je netacna.");
   }
 
-  user_logged = user;
   req.session.user_logged = user;
-  res.send({ "Uspjesno ste se prijavili": user_logged });
+  res.send({ "Uspjesno ste se prijavili": user});
 };
 
 const logout_user = (req, res) => {
