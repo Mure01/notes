@@ -1,4 +1,4 @@
-const users = [];
+var users = [];
 
 const add_user =  (req, res) => {
     let user = req.body;
@@ -47,5 +47,14 @@ const edit_user = (req, res) => {
   user_editing[0].company_id = update.company_id
   res.send(user_editing)
 }
+const delete_user = (req, res) => {
+  const username = req.params.username
+  const user_deleting = users.filter(u => u.username == username )
+  if(user_deleting.length == 0){
+      return res.status(400).send({error:"User not found."})
+  } 
+  users = users.filter(user => user.username != username)
+  res.send(users)
+}
 
-module.exports = {add_user, get_users, edit_user}
+module.exports = {add_user, get_users, edit_user, delete_user}
