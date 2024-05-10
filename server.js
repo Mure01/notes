@@ -14,9 +14,13 @@ app.use(session({
 
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/userRoutes");
+const noteRouter = require("./routes/noteRoutes")
+const companyRouter = require("./routes/companyRoutes")
 
 app.use("/", indexRouter);
 app.use("/", userRouter);
+app.use("/", noteRouter)
+app.use("/", companyRouter)
 
 const port = process.env.port;
 
