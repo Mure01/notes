@@ -1,7 +1,7 @@
 # Notes
 
 Ovaj projekat predstavlja aplikaciju za biljezenje zabiljeski koja omogućava korisnicima da jednostavno stvaraju, uređuju i brišu zabiljeske. 
-Projekat je razvijen kao dio mog internešipa kako bih demonstrirao svoje veštine u programiranju.
+Projekat je razvijen kao dio mog internešipa kako bih demonstrirao svoje vještine u programiranju.
 
 ## Funkcionalnosti
 
@@ -33,5 +33,5 @@ Projekat je razvijen koristeći sledeće tehnologije:
 - **Baza podataka:** MongoDB
 
 
-Ovaj projekat je razvijen od strane [Belmin Muratović](https://github.com/Mure01) kao deo internešipa u kompaniji Walter Code. Kontaktirajte me ako imate bilo kakvih pitanja ili sugestija.
+Ovaj projekat je razvijen od strane [Belmin Muratović](https://github.com/Mure01) kao dio internešipa u kompaniji Walter Code. Kontaktirajte me ako imate bilo kakvih pitanja ili sugestija.
 
