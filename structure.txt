@@ -11,6 +11,7 @@ notes-internship/
 
     routes/
         userRoutes.js
+        middleware.js
         noteRoutes.js
         companyRoutes.js
         index.js
