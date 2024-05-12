@@ -1,4 +1,5 @@
 const express = require("express");
+const { check } = require("express-validator");
 const router = express.Router();
 const { isAdmin, isLogged } = require("./middleware");
 const {
@@ -14,7 +15,7 @@ router.get("/notes", (req, res) => {
   res.send("Notes");
 });
 
-/** 
+/**
  * @swagger
  * /add_note:
  *   post:
@@ -46,9 +47,22 @@ router.get("/notes", (req, res) => {
  *                   type: string
  *                   description: The ID of the newly created note.
  */
-router.post("/add_note", isLogged, add_note);
+router.post(
+  "/add_note",
+  [
+    check("title", "Naslov je obavezan!").exists().not().isEmpty(),
+    check("desc", "Opis je obavezan!").exists().not().isEmpty(),
+    check("status", "Status je obavezan i moze biti todo, inprogress, done!")
+      .exists()
+      .not()
+      .isEmpty()
+      .isIn(["todo", "inprogress", "done"]),
+  ],
+  isLogged,
+  add_note
+);
 
-/** 
+/**
  * @swagger
  * /edit_note/{title}:
  *   put:
@@ -78,9 +92,21 @@ router.post("/add_note", isLogged, add_note);
  *       404:
  *         description: Note not found
  */
-router.put("/edit_note/:title", isLogged, edit_note);
+router.put(
+  "/edit_note/:title",
+  [
+    check("desc", "Opis je obavezan!").exists().not().isEmpty(),
+    check("status", "Status je obavezan i moze biti todo, inprogress, done!")
+      .exists()
+      .not()
+      .isEmpty()
+      .isIn(["todo", "inprogress", "done"]),
+  ],
+  isLogged,
+  edit_note
+);
 
-/** 
+/**
  * @swagger
  * /delete_note/{title}:
  *   delete:
@@ -101,7 +127,7 @@ router.put("/edit_note/:title", isLogged, edit_note);
  */
 router.delete("/delete_note/:title", isLogged, delete_note);
 
-/** 
+/**
  * @swagger
  * /get_note/{title}:
  *   get:
@@ -128,6 +154,22 @@ router.get("/get_note/:title", isLogged, get_note);
 
 /**
  * @swagger
+ *  components:
+ *    schemas:
+ *      Note:
+ *        type: object
+ *        properties:
+ *         title:
+ *           type: string
+ *         desc:
+ *           type: string
+ *         status:
+ *           type: string
+ *         user_id:
+ *           type: string
+ *         company_id:
+ *           type: string
+ *
  * /get_all_notes:
  *   get:
  *     summary: Get all notes

@@ -1,18 +1,11 @@
+const { validationResult } = require("express-validator");
+
 var notes = [];
 
 const add_note = (req, res) => {
-  var newNote = req.body;
+  if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
-  if (
-    newNote.title == null ||
-    newNote.title == "" ||
-    newNote.desc == null ||
-    newNote.desc == "" ||
-    newNote.status == null ||
-    newNote.status == ""
-  ) {
-    return res.send("Ispunite sva odgovarajuca polja!");
-  }
+  var newNote = req.body;
 
   newNote = {
     ...newNote,
@@ -30,6 +23,8 @@ const add_note = (req, res) => {
 };
 
 const edit_note = (req, res) => {
+  if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
+
   const title = req.params.title;
 
   const index = notes.findIndex((n) => n.title === title);
@@ -63,8 +58,8 @@ const get_note = (req, res) => {
   const username = req.session.user_logged.username;
 
   const note = notes.find((n) => n.title === title && n.user_id === username);
-  if(!note) {
-    res.send("Zabiljeska ne postoji")
+  if (!note) {
+    res.send("Zabiljeska ne postoji");
   }
   res.send(note);
 };
@@ -73,8 +68,8 @@ const get_all_notes = (req, res) => {
   const username = req.session.user_logged.username;
 
   const notes_usera = notes.filter((n) => n.user_id == username);
-  if(notes_usera.length <1){
-    return res.send("Nemate zabiljeski")
+  if (notes_usera.length < 1) {
+    return res.send("Nemate zabiljeski");
   }
   res.send(notes_usera);
 };
@@ -83,8 +78,8 @@ const get_all_notes_company = (req, res) => {
   const company_id = req.session.user_logged.company_id;
 
   const notes_company = notes.filter((n) => n.company_id == company_id);
-  if(notes_company.length <1){
-    return res.send("Vasa kompanija nema zabiljeski")
+  if (notes_company.length < 1) {
+    return res.send("Vasa kompanija nema zabiljeski");
   }
   res.send(notes_company);
 };

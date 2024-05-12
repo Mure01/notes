@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { check } = require("express-validator");
 const {
   add_user,
   get_users,
@@ -12,7 +12,6 @@ const {
 } = require("../controllers/userController");
 
 const { isAdmin, isLogged, isLoggedAlready } = require("./middleware");
-
 
 /**
  * @swagger
@@ -44,10 +43,47 @@ const { isAdmin, isLogged, isLoggedAlready } = require("./middleware");
  *       201:
  *         description: Successfully created
  */
-router.post("/add_user", add_user);
+router.post(
+  "/add_user",
+  [
+    check("name", "Ime je obavezno!").exists().not().isEmpty(),
+    check("surename", "Prezime je obavezno").exists().not().isEmpty(),
+    check("username", "Username je obavezan!").exists().not().isEmpty(),
+    check("password", "Password zahtjeva minimalno 8 znakova!")
+      .exists()
+      .not()
+      .isEmpty()
+      .isLength({ min: 8 }), // Corrected chaining
+    check("role", "Uloga moze biti samo admin ili user")
+      .exists()
+      .not()
+      .isEmpty()
+      .isIn(["admin", "user"]),
+    check("company_id", "Kompanija je obavezna!").exists().not().isEmpty(),
+  ],
+  add_user
+);
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         surname:
+ *           type: string
+ *         username:
+ *           type: string
+ *         password:
+ *           type: string
+ *         role:
+ *           type: string
+ *           enum: [admin, user]
+ *         company_id:
+ *           type: string
  * /get_users:
  *   get:
  *     summary: Get all users
@@ -60,7 +96,7 @@ router.post("/add_user", add_user);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/schemas/User'
+ *                 $ref: '#/components/schemas/User'
  */
 router.get("/get_users", get_users);
 
@@ -80,7 +116,7 @@ router.get("/get_users", get_users);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/schemas/User'
+ *                 $ref: '#components/schemas/User'
  */
 router.get(
   "/get_users_from_company",
@@ -123,7 +159,24 @@ router.get(
  *       404:
  *         description: User not found
  */
-router.put("/edit_user/:username", isLogged, edit_user);
+router.put(
+  "/edit_user/:username",
+  [
+    check("name", "Ime ne moze biti prazno!").not().isEmpty(),
+    check("surename", "Prezime ne moze biti prazno!").not().isEmpty(),
+    check("password", "Password zahtjeva minimalno 8 znakova!")
+      .not()
+      .isEmpty()
+      .isLength({ min: 8 }), // Corrected chaining
+    check("role", "Uloga moze biti samo admin ili user")
+      .not()
+      .isEmpty()
+      .isIn(["admin", "user"]),
+    check("company_id", "Kompanija je obavezna!").not().isEmpty(),
+  ],
+  isLogged,
+  edit_user
+);
 
 /**
  * @swagger
