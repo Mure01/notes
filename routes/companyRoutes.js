@@ -10,10 +10,48 @@ const {
   get_all_company,
 } = require("../controllers/companyController");
 
+// Ruta za prikaz informacija o kompaniji
 router.get("/company", (req, res) => {
   res.send("Company");
 });
 
+/**
+ * @swagger
+ * /add_company:
+ *   post:
+ *     summary: Stvaranje nove kompanije
+ *     description: Stvaranje nove kompanije s pruženim id, nazivom, brojem zaposlenih i adresom.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 description: ID kompanije
+ *               name:
+ *                 type: string
+ *                 description: Naziv kompanije
+ *               employed:
+ *                 type: integer
+ *                 description: Broj zaposlenih
+ *               address:
+ *                 type: string
+ *                 description: Adresa kompanije
+ *     responses:
+ *       '201':
+ *         description: Uspješno stvoreno
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID novo stvorene kompanije
+ */
 router.post(
   "/add_company",
   [
@@ -29,9 +67,95 @@ router.post(
   isLogged,
   add_company
 );
+
+/**
+ * @swagger
+ * /edit_company/{id}:
+ *   put:
+ *     summary: Edit company
+ *     description: Edit a company with the provided id.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The id of the company to edit
+ *     requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 employed:
+ *                   type: integer
+ *     responses:
+ *       '200':
+ *         description: Kompanija uspješno uređena
+ *       '401':
+ *         description: Neuspješna autorizacija
+ */
 router.put("/edit_company/:id", isAdmin, isLogged, edit_company);
+
+/**
+ * @swagger
+ * /get_company/{id}:
+ *   get:
+ *     summary: Dohvaćanje informacija o kompaniji
+ *     description: Dohvaćanje informacija o određenoj kompaniji.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID kompanije koju dohvaćate
+ *     responses:
+ *       '200':
+ *         description: Uspješno dohvaćene informacije
+ *       '404':
+ *         description: Kompanija nije pronađena
+ */
 router.get("/get_company/:id", get_company);
+
+/**
+ * @swagger
+ * /get_all_company:
+ *   get:
+ *     summary: Dohvaćanje svih kompanija
+ *     description: Dohvaćanje svih kompanija registriranih u sustavu.
+ *     responses:
+ *       '200':
+ *         description: Uspješno dohvaćene sve kompanije
+ *       '404':
+ *         description: Nema registriranih kompanija
+ */
 router.get("/get_all_company", get_all_company);
+
+/**
+ * @swagger
+ * /delete_company/{id}:
+ *   delete:
+ *     summary: Brisanje kompanije
+ *     description: Brisanje određene kompanije iz sustava.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID kompanije koju brišete
+ *     responses:
+ *       '200':
+ *         description: Kompanija uspješno obrisana
+ *       '401':
+ *         description: Neuspješna autorizacija
+ */
 router.delete("/delete_company/:id", isAdmin, isLogged, delete_company);
 
 module.exports = router;
