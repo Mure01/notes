@@ -3,6 +3,7 @@ require("dotenv").config();
 const session = require('express-session');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const mongoose = require('./config');
 
 const options = {
   definition: {

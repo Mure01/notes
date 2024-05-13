@@ -1,86 +1,78 @@
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
+const userModel = require('../models/User');
+const companyModel = require('../models/Company')
 
-var users = [];
-
-const add_user = (req, res) => {
+const add_user = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   let user = req.body;
+  const company = await companyModel.findOne({unique_name: user.company_id})
+  const userExist = await userModel.findOne({username: user.username})
 
-  if (users.find((u) => u.username == user.username)) {
+  if (userExist) {
     return res.status(400).json({ status: 400, error: "Korisničko ime se već koristi!" });
   }
-  bcrypt.hash(user.password, 10, (err, hash) => {
-    if (err) {
-      console.error("Greška pri hashiranju lozinke:", err);
-      return;
-    }
-    user.password = hash;
-  });
 
-  users.push(user);
-  res.send(users);
+  const salt = bcrypt.genSaltSync();
+  const savepass = bcrypt.hashSync(user.password, salt);
+
+  const newUser = new userModel({
+    username: user.username,
+    password: savepass,
+    name:user.name,
+    surename:user.surename,
+    role: user.role,
+    company_id: company._id
+  })
+  await newUser.save()
+  res.send(newUser);
 };
 
-const get_users = (req, res) => {
-  res.send(users);
+const get_users = async (req, res) => {
+  const users_baza = await userModel.find()
+  res.send(users_baza);
 };
 
-const edit_user = (req, res) => {
+const edit_user = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const username = req.params.username;
-  const index = users.findIndex((u) => u.username === username);
-
-  if (index === -1) {
+  const user = await userModel.findOneAndUpdate({username: username}, req.body, {new: true})
+  if (!user) {
     return res.status(400).send({ error: "User nije pronadjen." });
   }
-
-  const update = req.body;
-  users[index] = {
-    ...users[index],
-    name: update.name,
-    surename: update.surename,
-    role: update.role,
-    password: update.password,
-    company_id: update.company_id,
-  };
-
-  res.send(users[index]);
+  res.send(user);
 };
 
-const delete_user = (req, res) => {
+const delete_user = async (req, res) => {
   const username = req.params.username;
-  const user_deleting = users.filter((u) => u.username == username);
-  if (user_deleting.length == 0) {
+  const user_deleting = await userModel.findOneAndDelete({username:username})
+  if (!user_deleting) {
     return res.status(400).send({ error: "User nije pronadjen." });
   }
 
-  users = users.filter((user) => user.username != username);
-  res.send(users);
+  res.send(user_deleting);
 };
 
-const get_users_from_company = (req, res) => {
+const get_users_from_company = async (req, res) => {
   const company = req.session.user_logged.company_id;
-  let users_from_company = users.filter((u) => u.company_id == company);
-  
+  const users_from_company = await userModel.find({company_id: company})
 
   res.send(users_from_company);
 };
 
-const get_user_username = (req, res) => {
+const get_user_username = async (req, res) => {
 
   const username = req.params.username
-  const index = users.findIndex(u => u.username === username)
-
-  res.send(users[index])
+  const user = await userModel.findOne({username: username})  
+  res.send(user)
 }
 
-const login_user = (req, res) => {
+const login_user = async (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find((u) => u.username === username);
+  const user = await userModel.findOne({username: username})  
 
   if (!user) {
     return res.status(401).send("User nije pronadjen.");
@@ -92,6 +84,7 @@ const login_user = (req, res) => {
   }
 
   req.session.user_logged = user;
+  console.log(req.session.user_logged)
   res.send({ "Uspjesno ste se prijavili": user });
 };
 

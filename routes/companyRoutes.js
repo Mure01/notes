@@ -55,7 +55,7 @@ router.get("/company", (req, res) => {
 router.post(
   "/add_company",
   [
-    check("id", "Id kompanije je obavezan").exists().not().isEmpty(),
+    check("unique_name", "Id kompanije je obavezan").exists().not().isEmpty(),
     check("name", "Naziv kompanije je obavezan").exists().not().isEmpty(),
     check("employed", "Broj uposlenih kompanije je obavezan")
       .exists()
@@ -63,8 +63,6 @@ router.post(
       .isEmpty(),
     check("address", "Adresa kompanije je obavezna").exists().not().isEmpty(),
   ],
-  isAdmin,
-  isLogged,
   add_company
 );
 

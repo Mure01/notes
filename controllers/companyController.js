@@ -1,60 +1,58 @@
 const { validationResult } = require("express-validator");
+const companyModel = require('../models/Company')
 
- company = [];
-
-const add_company = (req, res) => {
+const add_company = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   var newCompany = req.body;
 
-  const company_exist = company.find((c) => c.id == newCompany.id);
+  const company_exist = await companyModel.findOne({unique_name: newCompany.unique_name});
   if (company_exist) {
     return res.send("Kompanija sa tim id-jem vec postoji!");
   }
-  company.push(newCompany);
+  const newcompany = new companyModel({
+    unique_name: newCompany.unique_name,
+    name: newCompany.name,
+    address: newCompany.address,
+    employed: newCompany.employed
+  })  
+  newcompany.save()
   res.send(company);
 };
 
-const edit_company = (req, res) => {
+const edit_company = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const id = req.params.id;
-
-  const index = company.findIndex((c) => c.id === id);
-  if (index < 0) {
+  const company_update = await companyModel.findOneAndUpdate({unique_name: id}, req.body, {new: true})
+  if (!company_update) {
     return res.send("Nema takve kompanije");
   }
 
-  company[index] = {
-    ...company[index],
-    ...req.body,
-  };
-  res.send(company);
+  res.send(company_update);
 };
 
-const delete_company = (req, res) => {
+const delete_company = async (req, res) => {
   const id = req.params.id;
 
-  const index = company.findIndex((c) => c.id == id);
-  if (index < 0) {
-    res.send("Vasa kompanija ne postoji!");
-  }
-  company.splice(index, 1);
-  res.send({ "Uspjesno ste obrisali kompaniju": company });
+  const company_delete = await companyModel.findOneAndDelete({unique_name: id})
+
+  res.send({ "Uspjesno ste obrisali kompaniju": company_delete });
 };
 
-const get_company = (req, res) => {
+const get_company = async (req, res) => {
   const id = req.params.id;
 
-  const com = company.find((k) => k.id === id);
-  if (!com) {
+  const company = await companyModel.findOne({unique_name: id})
+  if (!company) {
     res.send("Kompanija ne postoji");
   }
-  res.send(com);
+  res.send(company);
 };
 
-const get_all_company = (req, res) => {
-  res.send(company);
+const get_all_company = async (req, res) => {
+  const companies = await companyModel.find()
+  res.send(companies);
 };
 
 module.exports = {

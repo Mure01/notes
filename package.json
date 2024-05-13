@@ -17,6 +17,8 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "express-validator": "^7.0.1",
+    "mongodb": "^6.6.1",
+    "mongoose": "^8.3.4",
     "nodemon": "^3.1.0",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^5.0.0"

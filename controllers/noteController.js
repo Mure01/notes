@@ -1,83 +1,69 @@
 const { validationResult } = require("express-validator");
-
+const noteModel = require('../models/Note')
 var notes = [];
 
-const add_note = (req, res) => {
+const add_note = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   var newNote = req.body;
 
   newNote = {
     ...newNote,
-    user_id: req.session.user_logged.username,
+    user: req.session.user_logged._id,
     company_id: req.session.user_logged.company_id,
   };
-  const notes_exist = notes.find(
-    (n) => n.title == newNote.title && n.user_id == newNote.user_id
-  );
-  if (notes_exist) {
-    return res.send("Zabiljeska sa tim naslovom vec postoji!");
-  }
-  notes.push(newNote);
-  res.send(notes);
+
+  const newNoteM = new noteModel({...newNote})
+  await newNoteM.save()
+  res.send(newNoteM);
 };
 
-const edit_note = (req, res) => {
+const edit_note = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
-  const title = req.params.title;
+  const id = req.params.title;
 
-  const index = notes.findIndex((n) => n.title === title);
-  if (index < 0) {
+  const note_update = await noteModel.findByIdAndUpdate(id, req.body, {new: true})
+  if (!note_update) {
     return res.send("Nema takve zabiljeske");
   }
 
-  notes[index] = {
-    ...notes[index],
-    ...req.body,
-  };
-  res.send(notes);
+  res.send(note_update);
 };
 
-const delete_note = (req, res) => {
-  const title = req.params.title;
-  const username = req.session.user_logged.username;
-
-  const index = notes.findIndex(
-    (n) => n.title == title && n.user_id == username
-  );
-  if (index < 0) {
+const delete_note = async (req, res) => {
+  const id = req.params.title;
+  const note_delete = await noteModel.findByIdAndDelete(id)
+  if (!note_delete) {
     res.send("Vasa zabiljeska ne postoji!");
   }
-  notes.splice(index, 1);
-  res.send({ "Uspjesno ste obrisali zabiljesku": notes });
+  res.send({ "Uspjesno ste obrisali zabiljesku": note_delete });
 };
 
-const get_note = (req, res) => {
-  const title = req.params.title;
-  const username = req.session.user_logged.username;
+const get_note = async  (req, res) => {
+  const id = req.params.title;
 
-  const note = notes.find((n) => n.title === title && n.user_id === username);
+  const note = await noteModel.findById(id) 
   if (!note) {
     res.send("Zabiljeska ne postoji");
   }
   res.send(note);
 };
 
-const get_all_notes = (req, res) => {
-  const username = req.session.user_logged.username;
+const get_all_notes = async (req, res) => {
+  const id_usera = req.session.user_logged._id;
 
-  const notes_usera = notes.filter((n) => n.user_id == username);
+  const notes_usera = await noteModel.find({user: id_usera})
   if (notes_usera.length < 1) {
     return res.send("Nemate zabiljeski");
   }
   res.send(notes_usera);
 };
 
-const get_all_notes_company = (req, res) => {
+const get_all_notes_company = async (req, res) => {
   const company_id = req.session.user_logged.company_id;
 
-  const notes_company = notes.filter((n) => n.company_id == company_id);
+  const notes_company = await noteModel.find({company_id: company_id});
   if (notes_company.length < 1) {
     return res.send("Vasa kompanija nema zabiljeski");
   }
