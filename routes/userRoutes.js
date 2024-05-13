@@ -9,6 +9,7 @@ const {
   login_user,
   get_users_from_company,
   logout_user,
+  get_user_username
 } = require("../controllers/userController");
 
 const { isAdmin, isLogged, isLoggedAlready } = require("./middleware");
@@ -99,6 +100,36 @@ router.post(
  *                 $ref: '#/components/schemas/User'
  */
 router.get("/get_users", get_users);
+
+/**
+ * @swagger
+ * /get_user/{username}:
+ *   get:
+ *     summary: Get user
+ *     description: Retrieve a user with the provided username.
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The username of the user to retrieve
+ *     responses:
+ *       200:
+ *         description: A single user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: Note not found
+ */
+router.get(
+  "/get_user/:username",
+  [check('username',"Username je obavezan").exists().not().isEmpty(),
+    check('password', "Password je obavezan").exists().not().isEmpty()
+  ],
+  isLogged, get_user_username);
 
 /**
  * @swagger

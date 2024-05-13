@@ -7,6 +7,7 @@ const isAdmin = (req, res, next) => {
   };
   
   const isLogged = (req, res, next) => {
+    console.log(req.session.user_logged)
     if (req.session.user_logged) {
       next();
     } else {

@@ -25,10 +25,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret: 'Internship Walter Code',
+  secret: 'Notes-Internship',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false
 }))
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  next();
+});
+
+
 
 const swaggerSpec = swaggerJSDoc(options);
 

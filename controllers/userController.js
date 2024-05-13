@@ -9,7 +9,7 @@ const add_user = (req, res) => {
   let user = req.body;
 
   if (users.find((u) => u.username == user.username)) {
-    return res.status(400).send({ error: "Username se vec koristi!" });
+    return res.status(400).json({ status: 400, error: "Korisničko ime se već koristi!" });
   }
   bcrypt.hash(user.password, 10, (err, hash) => {
     if (err) {
@@ -41,7 +41,7 @@ const edit_user = (req, res) => {
   users[index] = {
     ...users[index],
     name: update.name,
-    surname: update.surname,
+    surename: update.surename,
     role: update.role,
     password: update.password,
     company_id: update.company_id,
@@ -64,9 +64,18 @@ const delete_user = (req, res) => {
 const get_users_from_company = (req, res) => {
   const company = req.session.user_logged.company_id;
   let users_from_company = users.filter((u) => u.company_id == company);
+  
 
   res.send(users_from_company);
 };
+
+const get_user_username = (req, res) => {
+
+  const username = req.params.username
+  const index = users.findIndex(u => u.username === username)
+
+  res.send(users[index])
+}
 
 const login_user = (req, res) => {
   const { username, password } = req.body;
@@ -99,6 +108,7 @@ const logout_user = (req, res) => {
 module.exports = {
   add_user,
   get_users,
+  get_user_username,
   edit_user,
   delete_user,
   login_user,
