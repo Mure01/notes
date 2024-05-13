@@ -28,7 +28,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: 'Notes-Internship',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, // Postavite na true ako koristite HTTPS
+    maxAge: 3600000 // Trajanje sesije u milisekundama (u ovom primjeru 1 sat)
+  }
 }))
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

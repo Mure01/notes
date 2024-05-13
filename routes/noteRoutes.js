@@ -1,7 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 const router = express.Router();
-const { isAdmin, isLogged } = require("./middleware");
+const { isAdmin, verifyTokenMiddleware } = require("./middleware");
 const {
   add_note,
   edit_note,
@@ -58,7 +58,7 @@ router.post(
       .isEmpty()
       .isIn(["todo", "inprogress", "done"]),
   ],
-  isLogged,
+  verifyTokenMiddleware,
   add_note
 );
 
@@ -102,7 +102,7 @@ router.put(
       .isEmpty()
       .isIn(["todo", "inprogress", "done"]),
   ],
-  isLogged,
+  verifyTokenMiddleware,
   edit_note
 );
 
@@ -125,7 +125,7 @@ router.put(
  *       404:
  *         description: Note not found
  */
-router.delete("/delete_note/:title", isLogged, delete_note);
+router.delete("/delete_note/:title", verifyTokenMiddleware, delete_note);
 
 /**
  * @swagger
@@ -150,7 +150,7 @@ router.delete("/delete_note/:title", isLogged, delete_note);
  *       404:
  *         description: Note not found
  */
-router.get("/get_note/:title", isLogged, get_note);
+router.get("/get_note/:title", verifyTokenMiddleware, get_note);
 
 /**
  * @swagger
@@ -184,7 +184,7 @@ router.get("/get_note/:title", isLogged, get_note);
  *               items:
  *                 $ref: '#/components/schemas/Note'
  */
-router.get("/get_all_notes", isLogged, get_all_notes);
+router.get("/get_all_notes", verifyTokenMiddleware, get_all_notes);
 
 /**
  * @swagger
@@ -202,6 +202,11 @@ router.get("/get_all_notes", isLogged, get_all_notes);
  *               items:
  *                 $ref: '#/components/schemas/Note'
  */
-router.get("/get_all_notes_company", isAdmin, isLogged, get_all_notes_company);
+router.get(
+  "/get_all_notes_company",
+  verifyTokenMiddleware,
+  isAdmin,
+  get_all_notes_company
+);
 
 module.exports = router;

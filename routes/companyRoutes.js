@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
-const { isAdmin, isLogged } = require("./middleware");
+const { isAdmin, verifyTokenMiddleware } = require("./middleware");
 const {
   add_company,
   edit_company,
@@ -98,7 +98,7 @@ router.post(
  *       '401':
  *         description: Neuspješna autorizacija
  */
-router.put("/edit_company/:id", isAdmin, isLogged, edit_company);
+router.put("/edit_company/:id", verifyTokenMiddleware, isAdmin, edit_company);
 
 /**
  * @swagger
@@ -154,6 +154,11 @@ router.get("/get_all_company", get_all_company);
  *       '401':
  *         description: Neuspješna autorizacija
  */
-router.delete("/delete_company/:id", isAdmin, isLogged, delete_company);
+router.delete(
+  "/delete_company/:id",
+  verifyTokenMiddleware,
+  isAdmin,
+  delete_company
+);
 
 module.exports = router;

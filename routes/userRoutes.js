@@ -9,10 +9,14 @@ const {
   login_user,
   get_users_from_company,
   logout_user,
-  get_user_username
+  get_user_username,
 } = require("../controllers/userController");
 
-const { isAdmin, isLogged, isLoggedAlready } = require("./middleware");
+const {
+  isAdmin,
+  isLoggedAlready,
+  verifyTokenMiddleware,
+} = require("./middleware");
 
 /**
  * @swagger
@@ -126,10 +130,13 @@ router.get("/get_users", get_users);
  */
 router.get(
   "/get_user/:username",
-  [check('username',"Username je obavezan").exists().not().isEmpty(),
-    check('password', "Password je obavezan").exists().not().isEmpty()
+  [
+    check("username", "Username je obavezan").exists().not().isEmpty(),
+    check("password", "Password je obavezan").exists().not().isEmpty(),
   ],
-  isLogged, get_user_username);
+  verifyTokenMiddleware,
+  get_user_username
+);
 
 /**
  * @swagger
@@ -151,8 +158,8 @@ router.get(
  */
 router.get(
   "/get_users_from_company",
+  verifyTokenMiddleware,
   isAdmin,
-  isLogged,
   get_users_from_company
 );
 
@@ -205,7 +212,7 @@ router.put(
       .isIn(["admin", "user"]),
     check("company_id", "Kompanija je obavezna!").not().isEmpty(),
   ],
-  isLogged,
+  verifyTokenMiddleware,
   edit_user
 );
 
@@ -228,7 +235,7 @@ router.put(
  *       404:
  *         description: User not found
  */
-router.delete("/delete_user/:username", isLogged, delete_user);
+router.delete("/delete_user/:username", verifyTokenMiddleware, delete_user);
 
 /**
  * @swagger
@@ -265,6 +272,6 @@ router.post("/login_user", isLoggedAlready, login_user);
  *       200:
  *         description: Successfully logged out
  */
-router.post("/logout_user", isLogged, logout_user);
+router.post("/logout_user", verifyTokenMiddleware, logout_user);
 
 module.exports = router;

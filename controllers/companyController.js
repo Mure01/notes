@@ -1,12 +1,14 @@
 const { validationResult } = require("express-validator");
-const companyModel = require('../models/Company')
+const companyModel = require("../models/Company");
 
 const add_company = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   var newCompany = req.body;
 
-  const company_exist = await companyModel.findOne({unique_name: newCompany.unique_name});
+  const company_exist = await companyModel.findOne({
+    unique_name: newCompany.unique_name,
+  });
   if (company_exist) {
     return res.send("Kompanija sa tim id-jem vec postoji!");
   }
@@ -14,9 +16,9 @@ const add_company = async (req, res) => {
     unique_name: newCompany.unique_name,
     name: newCompany.name,
     address: newCompany.address,
-    employed: newCompany.employed
-  })  
-  newcompany.save()
+    employed: newCompany.employed,
+  });
+  newcompany.save();
   res.send(company);
 };
 
@@ -24,7 +26,11 @@ const edit_company = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const id = req.params.id;
-  const company_update = await companyModel.findOneAndUpdate({unique_name: id}, req.body, {new: true})
+  const company_update = await companyModel.findOneAndUpdate(
+    { unique_name: id },
+    req.body,
+    { new: true }
+  );
   if (!company_update) {
     return res.send("Nema takve kompanije");
   }
@@ -35,7 +41,9 @@ const edit_company = async (req, res) => {
 const delete_company = async (req, res) => {
   const id = req.params.id;
 
-  const company_delete = await companyModel.findOneAndDelete({unique_name: id})
+  const company_delete = await companyModel.findOneAndDelete({
+    unique_name: id,
+  });
 
   res.send({ "Uspjesno ste obrisali kompaniju": company_delete });
 };
@@ -43,7 +51,7 @@ const delete_company = async (req, res) => {
 const get_company = async (req, res) => {
   const id = req.params.id;
 
-  const company = await companyModel.findOne({unique_name: id})
+  const company = await companyModel.findOne({ unique_name: id });
   if (!company) {
     res.send("Kompanija ne postoji");
   }
@@ -51,7 +59,7 @@ const get_company = async (req, res) => {
 };
 
 const get_all_company = async (req, res) => {
-  const companies = await companyModel.find()
+  const companies = await companyModel.find();
   res.send(companies);
 };
 
