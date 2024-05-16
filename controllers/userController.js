@@ -10,6 +10,14 @@ const add_user = async (req, res) => {
   const company = await companyModel.findOne({ unique_name: user.company_id });
   const userExist = await userModel.findOne({ username: user.username });
 
+  if (company) {
+    company.employed += 1;
+    await company.save();
+  } else {
+    return res
+      .status(400)
+      .json({ status: 400, error: "Nije pronadjena kompanija!" });
+  }
   if (userExist) {
     return res
       .status(400)
@@ -43,7 +51,7 @@ const edit_user = async (req, res) => {
   const salt = bcrypt.genSaltSync();
   const savepass = bcrypt.hashSync(req.body.password, salt);
 
-  const updateData = {...req.body, password:savepass }
+  const updateData = { ...req.body, password: savepass };
   const user = await userModel.findOneAndUpdate(
     { username: username },
     updateData,

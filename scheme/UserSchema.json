@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "username": { "type": "string" },
+        "name": { "type": "string"},
+        "surename": { "type": "string"},
+        "password": { "type": "string", "minLength": 8 },
+        "role": {
+            "type": "string",
+            "enum": ["admin", "user"] 
+        },
+        "company_id": {"type": "number"}
+    },
+    "required": ["username", "name", "surename", "password", "role", "company_id"]
+}

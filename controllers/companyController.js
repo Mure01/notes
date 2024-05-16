@@ -19,7 +19,7 @@ const add_company = async (req, res) => {
     employed: newCompany.employed,
   });
   newcompany.save();
-  res.send(company);
+  res.send(newcompany);
 };
 
 const edit_company = async (req, res) => {

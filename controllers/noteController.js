@@ -9,7 +9,7 @@ const add_note = async (req, res) => {
 
   newNote = {
     ...newNote,
-    user: req.userData._id,
+    user: req.userData.id,
     company_id: req.userData.company_id,
   };
 
@@ -22,7 +22,7 @@ const edit_note = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const id = req.params.title;
-
+  console.log(req.body)
   const note_update = await noteModel.findByIdAndUpdate(id, req.body, {
     new: true,
   });
@@ -65,7 +65,7 @@ const get_all_notes = async (req, res) => {
 const get_all_notes_company = async (req, res) => {
   const company_id = req.userData.company_id;
 
-  const notes_company = await noteModel.find({ company_id: company_id });
+  const notes_company = await noteModel.find({ company_id: company_id }).populate('user');
   if (notes_company.length < 1) {
     return res.send("Vasa kompanija nema zabiljeski");
   }

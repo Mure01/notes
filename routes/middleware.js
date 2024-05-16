@@ -26,7 +26,6 @@ const verifyTokenMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
     req.userData = decoded;
-    console.log(req.userData);
     next();
   } catch (error) {
     return res
