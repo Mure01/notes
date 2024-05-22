@@ -1,8 +1,8 @@
-const bcrypt = require("bcrypt");
-const { validationResult } = require("express-validator");
-const userModel = require("../models/User");
-const companyModel = require("../models/Company");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
+const { validationResult } = require('express-validator');
+const userModel = require('../models/User');
+const companyModel = require('../models/Company');
+const jwt = require('jsonwebtoken');
 
 const addUser = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
@@ -17,12 +17,12 @@ const addUser = async (req, res) => {
   } else {
     return res
       .status(400)
-      .json({ status: 400, error: "Nije pronadjena kompanija!" });
+      .json({ status: 400, error: 'Nije pronadjena kompanija!' });
   }
   if (userExist) {
     return res
       .status(400)
-      .json({ status: 400, error: "Korisničko ime se već koristi!" });
+      .json({ status: 400, error: 'Korisničko ime se već koristi!' });
   }
 
   const salt = bcrypt.genSaltSync();
@@ -59,7 +59,7 @@ const editUser = async (req, res) => {
     { new: true }
   );
   if (!user) {
-    return res.status(400).send({ error: "User nije pronadjen." });
+    return res.status(400).send({ error: 'User nije pronadjen.' });
   }
   res.send(user);
 };
@@ -70,7 +70,7 @@ const deleteUser = async (req, res) => {
     username: username,
   });
   if (!user_deleting) {
-    return res.status(400).send({ error: "User nije pronadjen." });
+    return res.status(400).send({ error: 'User nije pronadjen.' });
   }
 
   res.send(user_deleting);
@@ -95,12 +95,12 @@ const loginUser = async (req, res) => {
   const user = await userModel.findOne({ username: username });
 
   if (!user) {
-    return res.status(401).send("User nije pronadjen.");
+    return res.status(401).send('User nije pronadjen.');
   }
 
-  da_li_su_jednake_lozinke = bcrypt.compareSync(password, user.password);
+  const da_li_su_jednake_lozinke = bcrypt.compareSync(password, user.password);
   if (!da_li_su_jednake_lozinke) {
-    return res.status(401).send("Lozinka je netacna.");
+    return res.status(401).send('Lozinka je netacna.');
   }
   const payload = {
     username: user.username,
@@ -111,7 +111,7 @@ const loginUser = async (req, res) => {
     surename: user.surename,
   };
   const token = jwt.sign(payload, process.env.TOKEN_SECRET_KEY, {
-    expiresIn: "1h",
+    expiresIn: '1h',
   });
   req.session.user_logged = token;
   res.send({ token: token });
@@ -120,9 +120,9 @@ const loginUser = async (req, res) => {
 const logoutUser = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      res.status(500).send("Greška prilikom odjave korisnika.");
+      res.status(500).send('Greška prilikom odjave korisnika.');
     } else {
-      res.send("Uspješno ste odjavljeni.");
+      res.send('Uspješno ste odjavljeni.');
     }
   });
 };
@@ -135,5 +135,5 @@ module.exports = {
   getUsers,
   userCompany,
   loginUser,
-  logoutUser
+  logoutUser,
 };

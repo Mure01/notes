@@ -1,22 +1,22 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { check } = require("express-validator");
-const { isAdmin, verifyTokenMiddleware } = require("./middleware");
+const { check } = require('express-validator');
+const { isAdmin, verifyTokenMiddleware } = require('./middleware');
 const {
   deleteCompany,
   getAllCompany,
   getCompany,
   editCompany,
   addCompany,
-} = require("../controllers/companyController");
+} = require('../controllers/companyController');
 
-router.get("/companies", (req, res) => {
-  res.send("Company");
+router.get('/companies', (req, res) => {
+  res.send('Company');
 });
 
 /**
  * @swagger
- * /add_company:
+ * /companies:
  *   post:
  *     summary: Stvaranje nove kompanije
  *     description: Stvaranje nove kompanije s pruženim id, nazivom, brojem zaposlenih i adresom.
@@ -52,22 +52,22 @@ router.get("/companies", (req, res) => {
  *                   description: ID novo stvorene kompanije
  */
 router.post(
-  "/companies",
+  '/companies',
   [
-    check("unique_name", "Id kompanije je obavezan").exists().not().isEmpty(),
-    check("name", "Naziv kompanije je obavezan").exists().not().isEmpty(),
-    check("employed", "Broj uposlenih kompanije je obavezan")
+    check('unique_name', 'Id kompanije je obavezan').exists().not().isEmpty(),
+    check('name', 'Naziv kompanije je obavezan').exists().not().isEmpty(),
+    check('employed', 'Broj uposlenih kompanije je obavezan')
       .exists()
       .not()
       .isEmpty(),
-    check("address", "Adresa kompanije je obavezna").exists().not().isEmpty(),
+    check('address', 'Adresa kompanije je obavezna').exists().not().isEmpty(),
   ],
   addCompany
 );
 
 /**
  * @swagger
- * /edit_company/{id}:
+ * /companies/{id}:
  *   put:
  *     summary: Edit company
  *     description: Edit a company with the provided id.
@@ -97,11 +97,11 @@ router.post(
  *       '401':
  *         description: Neuspješna autorizacija
  */
-router.put("/companies/:id", verifyTokenMiddleware, isAdmin, editCompany);
+router.put('/companies/:id', verifyTokenMiddleware, isAdmin, editCompany);
 
 /**
  * @swagger
- * /get_company/{id}:
+ * /companies/{id}:
  *   get:
  *     summary: Dohvaćanje informacija o kompaniji
  *     description: Dohvaćanje informacija o određenoj kompaniji.
@@ -118,11 +118,11 @@ router.put("/companies/:id", verifyTokenMiddleware, isAdmin, editCompany);
  *       '404':
  *         description: Kompanija nije pronađena
  */
-router.get("/companies/:id", getCompany);
+router.get('/companies/:id', getCompany);
 
 /**
  * @swagger
- * /get_all_company:
+ * /allCompanies:
  *   get:
  *     summary: Dohvaćanje svih kompanija
  *     description: Dohvaćanje svih kompanija registriranih u sustavu.
@@ -132,11 +132,11 @@ router.get("/companies/:id", getCompany);
  *       '404':
  *         description: Nema registriranih kompanija
  */
-router.get("/allCompanies", getAllCompany);
+router.get('/allCompanies', getAllCompany);
 
 /**
  * @swagger
- * /delete_company/{id}:
+ * /companies/{id}:
  *   delete:
  *     summary: Brisanje kompanije
  *     description: Brisanje određene kompanije iz sustava.
@@ -153,11 +153,6 @@ router.get("/allCompanies", getAllCompany);
  *       '401':
  *         description: Neuspješna autorizacija
  */
-router.delete(
-  "/companies/:id",
-  verifyTokenMiddleware,
-  isAdmin,
-  deleteCompany
-);
+router.delete('/companies/:id', verifyTokenMiddleware, isAdmin, deleteCompany);
 
 module.exports = router;

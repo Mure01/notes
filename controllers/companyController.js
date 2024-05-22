@@ -1,5 +1,5 @@
-const { validationResult } = require("express-validator");
-const companyModel = require("../models/Company");
+const { validationResult } = require('express-validator');
+const companyModel = require('../models/Company');
 
 const addCompany = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
@@ -10,7 +10,7 @@ const addCompany = async (req, res) => {
     unique_name: newCompany.unique_name,
   });
   if (company_exist) {
-    return res.send("Kompanija sa tim id-jem vec postoji!");
+    return res.send('Kompanija sa tim id-jem vec postoji!');
   }
   const newcompany = new companyModel({
     unique_name: newCompany.unique_name,
@@ -32,7 +32,7 @@ const editCompany = async (req, res) => {
     { new: true }
   );
   if (!company_update) {
-    return res.send("Nema takve kompanije");
+    return res.send('Nema takve kompanije');
   }
 
   res.send(company_update);
@@ -45,7 +45,7 @@ const deleteCompany = async (req, res) => {
     unique_name: id,
   });
 
-  res.send({ "Uspjesno ste obrisali kompaniju": company_delete });
+  res.send({ 'Uspjesno ste obrisali kompaniju': company_delete });
 };
 
 const getCompany = async (req, res) => {
@@ -53,7 +53,7 @@ const getCompany = async (req, res) => {
 
   const company = await companyModel.findOne({ unique_name: id });
   if (!company) {
-    res.send("Kompanija ne postoji");
+    res.send('Kompanija ne postoji');
   }
   res.send(company);
 };
@@ -68,5 +68,5 @@ module.exports = {
   editCompany,
   deleteCompany,
   getCompany,
-  getAllCompany
+  getAllCompany,
 };

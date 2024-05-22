@@ -1,11 +1,18 @@
-const express = require("express");
-const { check } = require("express-validator");
+const express = require('express');
+const { check } = require('express-validator');
 const router = express.Router();
-const { isAdmin, verifyTokenMiddleware } = require("./middleware");
-const { addNote, editNote, getNote, getAllNotes, getAllNotesCompany } = require("../controllers/noteController");
+const { isAdmin, verifyTokenMiddleware } = require('./middleware');
+const {
+  addNote,
+  editNote,
+  getNote,
+  getAllNotes,
+  getAllNotesCompany,
+  deleteNote,
+} = require('../controllers/noteController');
 
-router.get("/notes", (req, res) => {
-  res.send("Notes");
+router.get('/notes', (req, res) => {
+  res.send('Notes');
 });
 
 /**
@@ -40,15 +47,16 @@ router.get("/notes", (req, res) => {
  *                   type: string
  *                   description: The ID of the newly created note.
  */
-router.post( "/notes",
+router.post(
+  '/notes',
   [
-    check("title", "Naslov je obavezan!").exists().not().isEmpty(),
-    check("desc", "Opis je obavezan!").exists().not().isEmpty(),
-    check("status", "Status je obavezan i moze biti todo, inprogress, done!")
+    check('title', 'Naslov je obavezan!').exists().not().isEmpty(),
+    check('desc', 'Opis je obavezan!').exists().not().isEmpty(),
+    check('status', 'Status je obavezan i moze biti todo, inprogress, done!')
       .exists()
       .not()
       .isEmpty()
-      .isIn(["todo", "inprogress", "done"]),
+      .isIn(['todo', 'inprogress', 'done']),
   ],
   verifyTokenMiddleware,
   addNote
@@ -84,14 +92,15 @@ router.post( "/notes",
  *       404:
  *         description: Note not found
  */
-router.put("/notes/:title",
+router.put(
+  '/notes/:title',
   [
-    check("desc", "Opis je obavezan!").exists().not().isEmpty(),
-    check("status", "Status je obavezan i moze biti todo, inprogress, done!")
+    check('desc', 'Opis je obavezan!').exists().not().isEmpty(),
+    check('status', 'Status je obavezan i moze biti todo, inprogress, done!')
       .exists()
       .not()
       .isEmpty()
-      .isIn(["todo", "inprogress", "done"]),
+      .isIn(['todo', 'inprogress', 'done']),
   ],
   verifyTokenMiddleware,
   editNote
@@ -116,7 +125,7 @@ router.put("/notes/:title",
  *       404:
  *         description: Note not found
  */
-router.delete("/notes/:title", verifyTokenMiddleware, delete_note);
+router.delete('/notes/:title', verifyTokenMiddleware, deleteNote);
 
 /**
  * @swagger
@@ -141,7 +150,7 @@ router.delete("/notes/:title", verifyTokenMiddleware, delete_note);
  *       404:
  *         description: Note not found
  */
-router.get("/notes/:title", verifyTokenMiddleware, getNote);
+router.get('/notes/:title', verifyTokenMiddleware, getNote);
 
 /**
  * @swagger
@@ -175,7 +184,7 @@ router.get("/notes/:title", verifyTokenMiddleware, getNote);
  *               items:
  *                 $ref: '#/components/schemas/Note'
  */
-router.get("/allNotes", verifyTokenMiddleware, getAllNotes);
+router.get('/allNotes', verifyTokenMiddleware, getAllNotes);
 
 /**
  * @swagger
@@ -193,7 +202,8 @@ router.get("/allNotes", verifyTokenMiddleware, getAllNotes);
  *               items:
  *                 $ref: '#/components/schemas/Note'
  */
-router.get("/allNotesCompany",
+router.get(
+  '/allNotesCompany',
   verifyTokenMiddleware,
   isAdmin,
   getAllNotesCompany

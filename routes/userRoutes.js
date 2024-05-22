@@ -1,6 +1,6 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { check } = require("express-validator");
+const { check } = require('express-validator');
 const {
   logoutUser,
   loginUser,
@@ -10,13 +10,13 @@ const {
   getUserUsername,
   getUsers,
   addUser,
-} = require("../controllers/userController");
+} = require('../controllers/userController');
 
 const {
   isAdmin,
   isLoggedAlready,
   verifyTokenMiddleware,
-} = require("./middleware");
+} = require('./middleware');
 
 /**
  * @swagger
@@ -48,22 +48,23 @@ const {
  *       201:
  *         description: Successfully created
  */
-router.post("/user",
+router.post(
+  '/user',
   [
-    check("name", "Ime je obavezno!").exists().not().isEmpty(),
-    check("surename", "Prezime je obavezno").exists().not().isEmpty(),
-    check("username", "Username je obavezan!").exists().not().isEmpty(),
-    check("password", "Password zahtjeva minimalno 8 znakova!")
+    check('name', 'Ime je obavezno!').exists().not().isEmpty(),
+    check('surename', 'Prezime je obavezno').exists().not().isEmpty(),
+    check('username', 'Username je obavezan!').exists().not().isEmpty(),
+    check('password', 'Password zahtjeva minimalno 8 znakova!')
       .exists()
       .not()
       .isEmpty()
       .isLength({ min: 8 }), // Corrected chaining
-    check("role", "Uloga moze biti samo admin ili user")
+    check('role', 'Uloga moze biti samo admin ili user')
       .exists()
       .not()
       .isEmpty()
-      .isIn(["admin", "user"]),
-    check("company_id", "Kompanija je obavezna!").exists().not().isEmpty(),
+      .isIn(['admin', 'user']),
+    check('company_id', 'Kompanija je obavezna!').exists().not().isEmpty(),
   ],
   addUser
 );
@@ -102,7 +103,7 @@ router.post("/user",
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/user", getUsers);
+router.get('/user', getUsers);
 
 /**
  * @swagger
@@ -127,10 +128,11 @@ router.get("/user", getUsers);
  *       404:
  *         description: Note not found
  */
-router.get("/user/:username",
+router.get(
+  '/user/:username',
   [
-    check("username", "Username je obavezan").exists().not().isEmpty(),
-    check("password", "Password je obavezan").exists().not().isEmpty(),
+    check('username', 'Username je obavezan').exists().not().isEmpty(),
+    check('password', 'Password je obavezan').exists().not().isEmpty(),
   ],
   verifyTokenMiddleware,
   getUserUsername
@@ -154,11 +156,7 @@ router.get("/user/:username",
  *               items:
  *                 $ref: '#components/schemas/User'
  */
-router.get("/userCompany",
-  verifyTokenMiddleware,
-  isAdmin,
-  userCompany
-);
+router.get('/userCompany', verifyTokenMiddleware, isAdmin, userCompany);
 
 /**
  * @swagger
@@ -194,19 +192,20 @@ router.get("/userCompany",
  *       404:
  *         description: User not found
  */
-router.put("/user/:username",
+router.put(
+  '/user/:username',
   [
-    check("name", "Ime ne moze biti prazno!").not().isEmpty(),
-    check("surename", "Prezime ne moze biti prazno!").not().isEmpty(),
-    check("password", "Password zahtjeva minimalno 8 znakova!")
+    check('name', 'Ime ne moze biti prazno!').not().isEmpty(),
+    check('surename', 'Prezime ne moze biti prazno!').not().isEmpty(),
+    check('password', 'Password zahtjeva minimalno 8 znakova!')
       .not()
       .isEmpty()
       .isLength({ min: 8 }), // Corrected chaining
-    check("role", "Uloga moze biti samo admin ili user")
+    check('role', 'Uloga moze biti samo admin ili user')
       .not()
       .isEmpty()
-      .isIn(["admin", "user"]),
-    check("company_id", "Kompanija je obavezna!").not().isEmpty(),
+      .isIn(['admin', 'user']),
+    check('company_id', 'Kompanija je obavezna!').not().isEmpty(),
   ],
   verifyTokenMiddleware,
   editUser
@@ -231,7 +230,7 @@ router.put("/user/:username",
  *       404:
  *         description: User not found
  */
-router.delete("/user/:username", verifyTokenMiddleware, deleteUser);
+router.delete('/user/:username', verifyTokenMiddleware, deleteUser);
 
 /**
  * @swagger
@@ -256,7 +255,7 @@ router.delete("/user/:username", verifyTokenMiddleware, deleteUser);
  *       401:
  *         description: Unauthorized - Invalid credentials
  */
-router.post("/loginUser", isLoggedAlready, loginUser);
+router.post('/loginUser', isLoggedAlready, loginUser);
 
 /**
  * @swagger
@@ -268,6 +267,6 @@ router.post("/loginUser", isLoggedAlready, loginUser);
  *       200:
  *         description: Successfully logged out
  */
-router.post("/logoutUser", verifyTokenMiddleware, logoutUser);
+router.post('/logoutUser', verifyTokenMiddleware, logoutUser);
 
 module.exports = router;
