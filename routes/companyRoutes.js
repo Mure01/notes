@@ -3,15 +3,14 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { isAdmin, verifyTokenMiddleware } = require("./middleware");
 const {
-  add_company,
-  edit_company,
-  get_company,
-  delete_company,
-  get_all_company,
+  deleteCompany,
+  getAllCompany,
+  getCompany,
+  editCompany,
+  addCompany,
 } = require("../controllers/companyController");
 
-// Ruta za prikaz informacija o kompaniji
-router.get("/company", (req, res) => {
+router.get("/companies", (req, res) => {
   res.send("Company");
 });
 
@@ -53,7 +52,7 @@ router.get("/company", (req, res) => {
  *                   description: ID novo stvorene kompanije
  */
 router.post(
-  "/add_company",
+  "/companies",
   [
     check("unique_name", "Id kompanije je obavezan").exists().not().isEmpty(),
     check("name", "Naziv kompanije je obavezan").exists().not().isEmpty(),
@@ -63,7 +62,7 @@ router.post(
       .isEmpty(),
     check("address", "Adresa kompanije je obavezna").exists().not().isEmpty(),
   ],
-  add_company
+  addCompany
 );
 
 /**
@@ -98,7 +97,7 @@ router.post(
  *       '401':
  *         description: Neuspješna autorizacija
  */
-router.put("/edit_company/:id", verifyTokenMiddleware, isAdmin, edit_company);
+router.put("/companies/:id", verifyTokenMiddleware, isAdmin, editCompany);
 
 /**
  * @swagger
@@ -119,7 +118,7 @@ router.put("/edit_company/:id", verifyTokenMiddleware, isAdmin, edit_company);
  *       '404':
  *         description: Kompanija nije pronađena
  */
-router.get("/get_company/:id", get_company);
+router.get("/companies/:id", getCompany);
 
 /**
  * @swagger
@@ -133,7 +132,7 @@ router.get("/get_company/:id", get_company);
  *       '404':
  *         description: Nema registriranih kompanija
  */
-router.get("/get_all_company", get_all_company);
+router.get("/allCompanies", getAllCompany);
 
 /**
  * @swagger
@@ -155,10 +154,10 @@ router.get("/get_all_company", get_all_company);
  *         description: Neuspješna autorizacija
  */
 router.delete(
-  "/delete_company/:id",
+  "/companies/:id",
   verifyTokenMiddleware,
   isAdmin,
-  delete_company
+  deleteCompany
 );
 
 module.exports = router;

@@ -3,7 +3,8 @@ const { validationResult } = require("express-validator");
 const userModel = require("../models/User");
 const companyModel = require("../models/Company");
 const jwt = require("jsonwebtoken");
-const add_user = async (req, res) => {
+
+const addUser = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   let user = req.body;
@@ -39,12 +40,12 @@ const add_user = async (req, res) => {
   res.send(newUser);
 };
 
-const get_users = async (req, res) => {
+const getUsers = async (req, res) => {
   const users_baza = await userModel.find();
   res.send(users_baza);
 };
 
-const edit_user = async (req, res) => {
+const editUser = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const username = req.params.username;
@@ -63,7 +64,7 @@ const edit_user = async (req, res) => {
   res.send(user);
 };
 
-const delete_user = async (req, res) => {
+const deleteUser = async (req, res) => {
   const username = req.params.username;
   const user_deleting = await userModel.findOneAndDelete({
     username: username,
@@ -75,20 +76,20 @@ const delete_user = async (req, res) => {
   res.send(user_deleting);
 };
 
-const get_users_from_company = async (req, res) => {
+const userCompany = async (req, res) => {
   const company = req.userData.company_id;
   const users_from_company = await userModel.find({ company_id: company });
 
   res.send(users_from_company);
 };
 
-const get_user_username = async (req, res) => {
+const getUserUsername = async (req, res) => {
   const username = req.params.username;
   const user = await userModel.findOne({ username: username });
   res.send(user);
 };
 
-const login_user = async (req, res) => {
+const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   const user = await userModel.findOne({ username: username });
@@ -116,7 +117,7 @@ const login_user = async (req, res) => {
   res.send({ token: token });
 };
 
-const logout_user = (req, res) => {
+const logoutUser = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       res.status(500).send("Greška prilikom odjave korisnika.");
@@ -127,12 +128,12 @@ const logout_user = (req, res) => {
 };
 
 module.exports = {
-  add_user,
-  get_users,
-  get_user_username,
-  edit_user,
-  delete_user,
-  login_user,
-  get_users_from_company,
-  logout_user,
+  addUser,
+  editUser,
+  deleteUser,
+  getUserUsername,
+  getUsers,
+  userCompany,
+  loginUser,
+  logoutUser
 };

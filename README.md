@@ -21,8 +21,11 @@ git clone https://github.com/Mure01/notes.git
 
 2. Otvorite projekat u svom omiljenom razvojnom okruženju.
 3. Instalirajte sve potrebne zavisnosti pokretanjem komande: npm install
-
-4. Pokrenite aplikaciju koristeći komandu: npm run dev
+4. U svoje okruzenje dodajte .env fajl sa varijablama:
+        port = broj_porta (inace je 3000 po defaultu)
+        LINK_BAZE = "vas_link"
+        TOKEN_SECRET_KEY = "vas kljuc za token"
+5. Pokrenite aplikaciju koristeći komandu: npm run dev
 
    
 ## Tehnologije

@@ -1,8 +1,7 @@
 const { validationResult } = require("express-validator");
 const noteModel = require("../models/Note");
-var notes = [];
 
-const add_note = async (req, res) => {
+const addNote = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   var newNote = req.body;
@@ -18,7 +17,7 @@ const add_note = async (req, res) => {
   res.send(newNoteM);
 };
 
-const edit_note = async (req, res) => {
+const editNote = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const id = req.params.title;
@@ -33,7 +32,7 @@ const edit_note = async (req, res) => {
   res.send(note_update);
 };
 
-const delete_note = async (req, res) => {
+const deleteNote = async (req, res) => {
   const id = req.params.title;
   const note_delete = await noteModel.findByIdAndDelete(id);
   if (!note_delete) {
@@ -42,7 +41,7 @@ const delete_note = async (req, res) => {
   res.send({ "Uspjesno ste obrisali zabiljesku": note_delete });
 };
 
-const get_note = async (req, res) => {
+const getNote = async (req, res) => {
   const id = req.params.title;
 
   const note = await noteModel.findById(id);
@@ -52,7 +51,7 @@ const get_note = async (req, res) => {
   res.send(note);
 };
 
-const get_all_notes = async (req, res) => {
+const getAllNotes = async (req, res) => {
   const id_usera = req.userData._id;
 
   const notes_usera = await noteModel.find({ user: id_usera });
@@ -62,7 +61,7 @@ const get_all_notes = async (req, res) => {
   res.send(notes_usera);
 };
 
-const get_all_notes_company = async (req, res) => {
+const getAllNotesCompany = async (req, res) => {
   const company_id = req.userData.company_id;
 
   const notes_company = await noteModel.find({ company_id: company_id }).populate('user');
@@ -73,10 +72,10 @@ const get_all_notes_company = async (req, res) => {
 };
 
 module.exports = {
-  add_note,
-  edit_note,
-  delete_note,
-  get_all_notes,
-  get_all_notes_company,
-  get_note,
+  addNote,
+  editNote,
+  deleteNote,
+  getNote,
+  getAllNotes,
+  getAllNotesCompany
 };

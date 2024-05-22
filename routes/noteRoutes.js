@@ -2,14 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 const router = express.Router();
 const { isAdmin, verifyTokenMiddleware } = require("./middleware");
-const {
-  add_note,
-  edit_note,
-  delete_note,
-  get_all_notes,
-  get_all_notes_company,
-  get_note,
-} = require("../controllers/noteController");
+const { addNote, editNote, getNote, getAllNotes, getAllNotesCompany } = require("../controllers/noteController");
 
 router.get("/notes", (req, res) => {
   res.send("Notes");
@@ -17,7 +10,7 @@ router.get("/notes", (req, res) => {
 
 /**
  * @swagger
- * /add_note:
+ * /notes:
  *   post:
  *     summary: Create a new note
  *     description: Create a new note with the provided title, description, and status.
@@ -47,8 +40,7 @@ router.get("/notes", (req, res) => {
  *                   type: string
  *                   description: The ID of the newly created note.
  */
-router.post(
-  "/add_note",
+router.post( "/notes",
   [
     check("title", "Naslov je obavezan!").exists().not().isEmpty(),
     check("desc", "Opis je obavezan!").exists().not().isEmpty(),
@@ -59,12 +51,12 @@ router.post(
       .isIn(["todo", "inprogress", "done"]),
   ],
   verifyTokenMiddleware,
-  add_note
+  addNote
 );
 
 /**
  * @swagger
- * /edit_note/{title}:
+ * /notes/{title}:
  *   put:
  *     summary: Edit note
  *     description: Edit a note with the provided title, and update its description and status.
@@ -92,8 +84,7 @@ router.post(
  *       404:
  *         description: Note not found
  */
-router.put(
-  "/edit_note/:title",
+router.put("/notes/:title",
   [
     check("desc", "Opis je obavezan!").exists().not().isEmpty(),
     check("status", "Status je obavezan i moze biti todo, inprogress, done!")
@@ -103,12 +94,12 @@ router.put(
       .isIn(["todo", "inprogress", "done"]),
   ],
   verifyTokenMiddleware,
-  edit_note
+  editNote
 );
 
 /**
  * @swagger
- * /delete_note/{title}:
+ * /notes/{title}:
  *   delete:
  *     summary: Delete note
  *     description: Delete a note with the provided title.
@@ -125,11 +116,11 @@ router.put(
  *       404:
  *         description: Note not found
  */
-router.delete("/delete_note/:title", verifyTokenMiddleware, delete_note);
+router.delete("/notes/:title", verifyTokenMiddleware, delete_note);
 
 /**
  * @swagger
- * /get_note/{title}:
+ * /notes/{title}:
  *   get:
  *     summary: Get note
  *     description: Retrieve a note with the provided title.
@@ -150,7 +141,7 @@ router.delete("/delete_note/:title", verifyTokenMiddleware, delete_note);
  *       404:
  *         description: Note not found
  */
-router.get("/get_note/:title", verifyTokenMiddleware, get_note);
+router.get("/notes/:title", verifyTokenMiddleware, getNote);
 
 /**
  * @swagger
@@ -170,7 +161,7 @@ router.get("/get_note/:title", verifyTokenMiddleware, get_note);
  *         company_id:
  *           type: string
  *
- * /get_all_notes:
+ * /allNotes:
  *   get:
  *     summary: Get all notes
  *     description: Retrieve a list of all notes.
@@ -184,11 +175,11 @@ router.get("/get_note/:title", verifyTokenMiddleware, get_note);
  *               items:
  *                 $ref: '#/components/schemas/Note'
  */
-router.get("/get_all_notes", verifyTokenMiddleware, get_all_notes);
+router.get("/allNotes", verifyTokenMiddleware, getAllNotes);
 
 /**
  * @swagger
- * /get_all_notes_company:
+ * /getNotesCompany:
  *   get:
  *     summary: Get all notes for a company
  *     description: Retrieve a list of all notes belonging to a company.
@@ -202,11 +193,10 @@ router.get("/get_all_notes", verifyTokenMiddleware, get_all_notes);
  *               items:
  *                 $ref: '#/components/schemas/Note'
  */
-router.get(
-  "/get_all_notes_company",
+router.get("/allNotesCompany",
   verifyTokenMiddleware,
   isAdmin,
-  get_all_notes_company
+  getAllNotesCompany
 );
 
 module.exports = router;

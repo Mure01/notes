@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
 const {
-  add_user,
-  get_users,
-  edit_user,
-  delete_user,
-  login_user,
-  get_users_from_company,
-  logout_user,
-  get_user_username,
+  logoutUser,
+  loginUser,
+  deleteUser,
+  editUser,
+  userCompany,
+  getUserUsername,
+  getUsers,
+  addUser,
 } = require("../controllers/userController");
 
 const {
@@ -20,7 +20,7 @@ const {
 
 /**
  * @swagger
- * /add_user:
+ * /user:
  *   post:
  *     summary: Create a new user
  *     description: Create a new user with the provided details.
@@ -48,8 +48,7 @@ const {
  *       201:
  *         description: Successfully created
  */
-router.post(
-  "/add_user",
+router.post("/user",
   [
     check("name", "Ime je obavezno!").exists().not().isEmpty(),
     check("surename", "Prezime je obavezno").exists().not().isEmpty(),
@@ -66,7 +65,7 @@ router.post(
       .isIn(["admin", "user"]),
     check("company_id", "Kompanija je obavezna!").exists().not().isEmpty(),
   ],
-  add_user
+  addUser
 );
 
 /**
@@ -89,7 +88,7 @@ router.post(
  *           enum: [admin, user]
  *         company_id:
  *           type: string
- * /get_users:
+ * /user:
  *   get:
  *     summary: Get all users
  *     description: Retrieve a list of all users.
@@ -103,11 +102,11 @@ router.post(
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/get_users", get_users);
+router.get("/user", getUsers);
 
 /**
  * @swagger
- * /get_user/{username}:
+ * /user/{username}:
  *   get:
  *     summary: Get user
  *     description: Retrieve a user with the provided username.
@@ -128,19 +127,18 @@ router.get("/get_users", get_users);
  *       404:
  *         description: Note not found
  */
-router.get(
-  "/get_user/:username",
+router.get("/user/:username",
   [
     check("username", "Username je obavezan").exists().not().isEmpty(),
     check("password", "Password je obavezan").exists().not().isEmpty(),
   ],
   verifyTokenMiddleware,
-  get_user_username
+  getUserUsername
 );
 
 /**
  * @swagger
- * /get_users_from_company:
+ * /userCompany:
  *   get:
  *     summary: Get users from company
  *     description: Retrieve a list of users belonging to a company.
@@ -156,16 +154,15 @@ router.get(
  *               items:
  *                 $ref: '#components/schemas/User'
  */
-router.get(
-  "/get_users_from_company",
+router.get("/userCompany",
   verifyTokenMiddleware,
   isAdmin,
-  get_users_from_company
+  userCompany
 );
 
 /**
  * @swagger
- * /edit_user/{username}:
+ * /user/{username}:
  *   put:
  *     summary: Update user details
  *     description: Update details of a user with the provided username.
@@ -197,8 +194,7 @@ router.get(
  *       404:
  *         description: User not found
  */
-router.put(
-  "/edit_user/:username",
+router.put("/user/:username",
   [
     check("name", "Ime ne moze biti prazno!").not().isEmpty(),
     check("surename", "Prezime ne moze biti prazno!").not().isEmpty(),
@@ -213,12 +209,12 @@ router.put(
     check("company_id", "Kompanija je obavezna!").not().isEmpty(),
   ],
   verifyTokenMiddleware,
-  edit_user
+  editUser
 );
 
 /**
  * @swagger
- * /delete_user/{username}:
+ * /user/{username}:
  *   delete:
  *     summary: Delete user
  *     description: Delete a user with the provided username.
@@ -235,11 +231,11 @@ router.put(
  *       404:
  *         description: User not found
  */
-router.delete("/delete_user/:username", verifyTokenMiddleware, delete_user);
+router.delete("/user/:username", verifyTokenMiddleware, deleteUser);
 
 /**
  * @swagger
- * /login_user:
+ * /loginUser:
  *   post:
  *     summary: Log in user
  *     description: Log in with provided credentials.
@@ -260,11 +256,11 @@ router.delete("/delete_user/:username", verifyTokenMiddleware, delete_user);
  *       401:
  *         description: Unauthorized - Invalid credentials
  */
-router.post("/login_user", isLoggedAlready, login_user);
+router.post("/loginUser", isLoggedAlready, loginUser);
 
 /**
  * @swagger
- * /logout_user:
+ * /logoutUser:
  *   post:
  *     summary: Log out user
  *     description: Log out the currently logged-in user.
@@ -272,6 +268,6 @@ router.post("/login_user", isLoggedAlready, login_user);
  *       200:
  *         description: Successfully logged out
  */
-router.post("/logout_user", verifyTokenMiddleware, logout_user);
+router.post("/logoutUser", verifyTokenMiddleware, logoutUser);
 
 module.exports = router;

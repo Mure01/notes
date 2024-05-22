@@ -14,6 +14,5 @@ notes-internship/
         middleware.js
         noteRoutes.js
         companyRoutes.js
-        index.js
     
-    server.js (Main Express application)
+    server.js 

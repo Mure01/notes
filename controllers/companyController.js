@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
 const companyModel = require("../models/Company");
 
-const add_company = async (req, res) => {
+const addCompany = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   var newCompany = req.body;
@@ -22,7 +22,7 @@ const add_company = async (req, res) => {
   res.send(newcompany);
 };
 
-const edit_company = async (req, res) => {
+const editCompany = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const id = req.params.id;
@@ -38,7 +38,7 @@ const edit_company = async (req, res) => {
   res.send(company_update);
 };
 
-const delete_company = async (req, res) => {
+const deleteCompany = async (req, res) => {
   const id = req.params.id;
 
   const company_delete = await companyModel.findOneAndDelete({
@@ -48,7 +48,7 @@ const delete_company = async (req, res) => {
   res.send({ "Uspjesno ste obrisali kompaniju": company_delete });
 };
 
-const get_company = async (req, res) => {
+const getCompany = async (req, res) => {
   const id = req.params.id;
 
   const company = await companyModel.findOne({ unique_name: id });
@@ -58,15 +58,15 @@ const get_company = async (req, res) => {
   res.send(company);
 };
 
-const get_all_company = async (req, res) => {
+const getAllCompany = async (req, res) => {
   const companies = await companyModel.find();
   res.send(companies);
 };
 
 module.exports = {
-  add_company,
-  edit_company,
-  delete_company,
-  get_company,
-  get_all_company,
+  addCompany,
+  editCompany,
+  deleteCompany,
+  getCompany,
+  getAllCompany
 };
