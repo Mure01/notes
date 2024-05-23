@@ -188,7 +188,7 @@ router.get('/allNotes', verifyTokenMiddleware, getAllNotes);
 
 /**
  * @swagger
- * /getNotesCompany:
+ * /allNotesCompany:
  *   get:
  *     summary: Get all notes for a company
  *     description: Retrieve a list of all notes belonging to a company.

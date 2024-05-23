@@ -27,9 +27,6 @@ router.get('/companies', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               id:
- *                 type: integer
- *                 description: ID kompanije
  *               name:
  *                 type: string
  *                 description: Naziv kompanije
@@ -39,6 +36,9 @@ router.get('/companies', (req, res) => {
  *               address:
  *                 type: string
  *                 description: Adresa kompanije
+ *               unique_name:
+ *                  type: string
+ *                  description: Unikatni naziv
  *     responses:
  *       '201':
  *         description: Uspješno stvoreno
@@ -109,7 +109,7 @@ router.put('/companies/:id', verifyTokenMiddleware, isAdmin, editCompany);
  *       - in: path
  *         name: id
  *         schema:
- *           type: integer
+ *           type: string
  *         required: true
  *         description: ID kompanije koju dohvaćate
  *     responses:
