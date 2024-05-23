@@ -4,6 +4,7 @@ const session = require('express-session');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 require('./config');
+const port = process.env.PORT || 3000;
 
 const options = {
   definition: {
@@ -54,8 +55,6 @@ const companyRouter = require('./routes/companyRoutes');
 app.use('/', userRouter);
 app.use('/', noteRouter);
 app.use('/', companyRouter);
-
-const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log('App slusa na portu: ' + port);
