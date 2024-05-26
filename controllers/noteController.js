@@ -21,7 +21,6 @@ const editNote = async (req, res) => {
   if (!validationResult(req).isEmpty()) return res.json(validationResult(req));
 
   const id = req.params.title;
-  console.log(req.body);
   const note_update = await noteModel.findByIdAndUpdate(id, req.body, {
     new: true,
   });
